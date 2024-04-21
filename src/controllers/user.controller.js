@@ -9,6 +9,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 
 
+
 const registerUser = asyncHandler( async (req, res) => {
     //<-- We will do this step by step: -->
 
@@ -35,7 +36,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
     // (c)
-    const existedUser = User.findOne({ $or:[{username}, {email}] })
+    const existedUser = await User.findOne({ $or:[{username}, {email}] })
 
     if(existedUser){
         throw new ApiError(409, "User with email or username already exists")
@@ -43,8 +44,8 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
     // (d)
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.avatar[0]?.path;
+    const avatarLocalPath =  req.files?.avatar[0]?.path;
+    const coverImageLocalPath =  req.files?.coverImage[0]?.path;
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required")
@@ -80,7 +81,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
     //(i)
-    return res.status(201),json(
+    return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
 
